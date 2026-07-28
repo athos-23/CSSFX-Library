@@ -1,45 +1,50 @@
-{
-  "build": {
-    "beforeBuildCommand": "npm run build",
-    "beforeDevCommand": "npm run dev",
-    "devPath": "http://localhost:5173",
-    "distDir": "../dist"
-  },
-  "package": {
-    "productName": "CSSFX",
-    "version": "1.0.0"
-  },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "shell": {
-        "all": false,
-        "open": true
-      }
-    },
-    "bundle": {
-      "active": true,
-      "targets": "all",
-      "identifier": "com.cssfx.desktop",
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ]
-    },
-    "security": {
-      "csp": null
-    },
-    "windows": [
-      {
-        "title": "CSSFX — A CSS Effect Library",
-        "width": 1200,
-        "height": 800,
-        "resizable": true,
-        "fullscreen": false
-      }
-    ]
-  }
-}
+name: Build Desktop App
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-tauri:
+    permissions:
+      contents: write
+
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install frontend dependencies
+        run: npm install
+
+      - name: Install Tauri CLI v1
+        run: npm install -g @tauri-apps/cli@1
+
+      - name: Verify Tauri setup
+        run: |
+          node --version
+          npm --version
+          rustc --version
+          cargo --version
+          tauri --version
+
+      - name: Build Tauri Application
+        uses: tauri-apps/tauri-action@v0.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        with:
+          tagName: v1.0.0
+          releaseName: "CSSFX Desktop v1.0.0"
+          releaseBody: "CSSFX Desktop Application"
+          releaseDraft: false
+          prerelease: false
