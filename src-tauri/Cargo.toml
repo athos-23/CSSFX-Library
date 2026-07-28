@@ -1,9 +1,10 @@
 [package]
-name = "cssfx-app"
+name = "cssfx-Library"
 version = "1.0.0"
 description = "CSSFX Desktop Library"
 authors = ["you"]
 edition = "2021"
+build = "build.rs" 
 
 [build-dependencies]
 tauri-build = { version = "1.5", features = [] }
