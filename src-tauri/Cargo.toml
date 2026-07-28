@@ -2,7 +2,7 @@
 name = "cssfx-Library"
 version = "1.0.0"
 description = "CSSFX Desktop Library"
-authors = ["you"]
+authors = ["Athos.23"]
 edition = "2021"
 build = "build.rs" 
 
